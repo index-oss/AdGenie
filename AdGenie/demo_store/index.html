@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BharatMart - Powered by AdGenie API</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gurmukhi:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top Global Simulation Bar -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-branding">
+        <span class="badge-brand">AdGenie AI</span>
+        <span class="hud-title">BharatMart Simulator</span>
+      </div>
+
+      <!-- Controls: Toggle & Persona -->
+      <div class="hud-controls">
+        <div class="control-group">
+          <label class="control-label">Simulation Mode:</label>
+          <div class="toggle-wrapper">
+            <span id="labelStatic" class="mode-label active">Static Store</span>
+            <label class="switch">
+              <input type="checkbox" id="adgenieToggle" checked>
+              <span class="slider round"></span>
+            </label>
+            <span id="labelAi" class="mode-label active-ai">AdGenie Active ✨</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="personaSelect" class="control-label">User Persona:</label>
+          <select id="personaSelect" class="persona-dropdown">
+            <option value="usr_aman">🎓 Aman (21, Gamer / Student, Delhi)</option>
+            <option value="usr_ramesh">🧘 Ramesh Ji (54, Health / Comfort, Kanpur)</option>
+            <option value="usr_priya">💼 Priya (29, WFH Software Dev, Bengaluru)</option>
+            <option value="usr_harpreet">⚡ Harpreet (24, Fitness / Music, Ludhiana)</option>
+            <option value="usr_rohit_guest">👤 Guest User (Cold Start)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="langSelect" class="control-label">Ad Language:</label>
+          <select id="langSelect" class="lang-dropdown">
+            <option value="hinglish">Hinglish</option>
+            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+            <option value="mr">Marathi (मराठी)</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Revenue HUD -->
+      <div class="hud-stats">
+        <div class="stat-pill revenue-pill">
+          <span class="stat-label">Ad Revenue</span>
+          <span class="stat-value" id="hudRevenue">₹0.00</span>
+          <span class="stat-spark" id="revToast">+₹22.50</span>
+        </div>
+        <div class="stat-pill ctr-pill">
+          <span class="stat-label">Live CTR</span>
+          <span class="stat-value" id="hudCtr">7.4%</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Store Navigation -->
+  <nav class="store-nav">
+    <div class="nav-container">
+      <div class="store-logo">
+        <span class="store-icon">🛒</span>
+        <span class="store-name">BharatMart</span>
+        <span class="store-tagline">Apna Daily Store</span>
+      </div>
+
+      <div class="search-bar-wrapper">
+        <input type="text" id="searchInput" placeholder="Search headphones, knee support, ergonomics, ayurveda..." />
+        <button id="searchBtn" class="search-btn">🔍 Search</button>
+      </div>
+
+      <div class="nav-links">
+        <a href="#recommendations" class="nav-link">Recommended</a>
+        <a href="#all-products" class="nav-link">Catalog</a>
+        <button id="analyticsBtn" class="btn-analytics">📊 Live Analytics</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Active User Profile Bar -->
+  <div class="user-strip">
+    <div class="user-strip-inner">
+      <div class="user-avatar" id="userAvatar">🎓</div>
+      <div class="user-info">
+        <div class="user-title">
+          <strong id="userName">Aman Verma</strong>
+          <span class="user-meta" id="userMeta">(Age 21 | Delhi | Hinglish)</span>
+        </div>
+        <div class="user-interests" id="userInterests">
+          Interests: Gaming, Headphones, RGB, Mechanical Keyboard
+        </div>
+      </div>
+      <div class="adgenie-status-indicator" id="adgenieStatus">
+        <span class="pulse-dot"></span>
+        <span id="statusText">AdGenie AI Personalization Active</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="store-main">
+    <!-- Ad Banner Slot (Dynamic AdGenie Regional Ad vs Static Ad) -->
+    <section class="banner-section" id="bannerSection">
+      <!-- Injected via JavaScript -->
+    </section>
+
+    <!-- Personalized Recommendation Section -->
+    <section class="products-section" id="recommendations">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title" id="recSectionTitle">Personalized Recommendations For You</h2>
+          <p class="section-subtitle" id="recSectionSubtitle">
+            Ranked using TF-IDF Content Similarity & Demographic Affinity
+          </p>
+        </div>
+        <div class="algorithm-badge" id="algoBadge">
+          ⚡ Model: Hybrid TF-IDF + Cosine
+        </div>
+      </div>
+
+      <div class="product-grid" id="recProductGrid">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- Complete Store Catalog -->
+    <section class="products-section" id="all-products">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">All Products</h2>
+          <p class="section-subtitle">Browse full catalog across categories</p>
+        </div>
+      </div>
+      <div class="product-grid" id="allProductGrid">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Analytics Drawer Modal -->
+  <div class="modal-overlay" id="analyticsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📊 AdGenie Real-Time Analytics & ROI Engine</h3>
+        <button class="modal-close" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="metrics-row">
+          <div class="metric-card">
+            <span class="m-label">Static Banner CTR</span>
+            <span class="m-val red" id="mStaticCtr">1.8%</span>
+            <span class="m-sub">Traditional baseline</span>
+          </div>
+          <div class="metric-card">
+            <span class="m-label">AdGenie AI CTR</span>
+            <span class="m-val green" id="mAiCtr">7.4%</span>
+            <span class="m-sub">+310% Engagement Lift</span>
+          </div>
+          <div class="metric-card">
+            <span class="m-label">Total Revenue Generated</span>
+            <span class="m-val gold" id="mRevenue">₹28,450</span>
+            <span class="m-sub">CPC + Affiliate Commission</span>
+          </div>
+          <div class="metric-card">
+            <span class="m-label">Total Clicks Tracked</span>
+            <span class="m-val blue" id="mClicks">1,150</span>
+            <span class="m-sub">Across 5 Languages</span>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <h4>Language Performance Breakdown (Ad Clicks)</h4>
+          <div class="lang-bars" id="langBars">
+            <!-- Dynamic language bars -->
+          </div>
+        </div>
+
+        <div class="integration-snippet-box">
+          <h4>How Any Website Integrates AdGenie in 2 Steps:</h4>
+          <pre><code>&lt;!-- 1. Include AdGenie Script in your website --&gt;
+&lt;script src="http://api.adgenie.ai/sdk.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Embed Smart Ad &amp; Recommendations container --&gt;
+&lt;div id="adgenie-slot" data-user-id="USER_ID" data-lang="auto"&gt;&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="store-footer">
+    <div class="footer-inner">
+      <p><strong>AdGenie API</strong> - Academic Project for B.Tech CSE</p>
+      <p>Developers: <strong>Mohit Sharma & Rohit Gupta</strong> | Guides: <strong>Ms. Shikha Arora & Ms. Anushree</strong></p>
+      <p>Satyug Darshan Institute of Engineering & Technology, YMCA UST</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

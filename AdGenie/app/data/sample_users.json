@@ -1,0 +1,62 @@
+[
+  {
+    "user_id": "usr_aman",
+    "name": "Aman Verma",
+    "age": 21,
+    "age_group": "18-25",
+    "city": "Delhi NCR",
+    "preferred_language": "hinglish",
+    "interests": ["gaming", "coding", "headphones", "gadgets", "college"],
+    "search_history": ["best gaming headphones under 3000", "mechanical keyboard rgb", "laptop cooling stand"],
+    "recent_clicks": ["prod_001", "prod_003"],
+    "persona_desc": "College student & casual gamer. Looks for high FPS, RGB aesthetics, budget value deals."
+  },
+  {
+    "user_id": "usr_ramesh",
+    "name": "Ramesh Chandra Sharma",
+    "age": 54,
+    "age_group": "50+",
+    "city": "Kanpur, UP",
+    "preferred_language": "hi",
+    "interests": ["health", "ayurveda", "joint pain", "morning walk", "blood pressure"],
+    "search_history": ["knee pain relief belt", "digital BP machine ghar ke liye", "pure copper bottle benefits"],
+    "recent_clicks": ["prod_002", "prod_004", "prod_010"],
+    "persona_desc": "Retired government officer. Prefers simple Hindi, trustworthy reviews, health & comfort products."
+  },
+  {
+    "user_id": "usr_priya",
+    "name": "Priya Nair",
+    "age": 29,
+    "age_group": "26-35",
+    "city": "Bengaluru, Karnataka",
+    "preferred_language": "en",
+    "interests": ["work from home", "ergonomics", "desk setup", "fitness", "healthy cooking"],
+    "search_history": ["ergonomic lumbar mesh chair", "cast iron cookware safe", "fitness smartwatch"],
+    "recent_clicks": ["prod_005", "prod_008", "prod_007"],
+    "persona_desc": "Software engineer working remotely. Focuses on posture, productivity gadgets, and healthy kitchenware."
+  },
+  {
+    "user_id": "usr_harpreet",
+    "name": "Harpreet Singh",
+    "age": 24,
+    "age_group": "18-25",
+    "city": "Ludhiana, Punjab",
+    "preferred_language": "pa",
+    "interests": ["gym", "music", "fitness band", "wireless audio"],
+    "search_history": ["best bass wireless headphones", "gym fitness tracker waterproof"],
+    "recent_clicks": ["prod_001", "prod_007"],
+    "persona_desc": "Fitness enthusiast & music lover. Prefers energetic Punjabi tone and sporty gear."
+  },
+  {
+    "user_id": "usr_rohit_guest",
+    "name": "Guest Visitor (Cold Start)",
+    "age": 25,
+    "age_group": "18-25",
+    "city": "Mumbai, Maharashtra",
+    "preferred_language": "mr",
+    "interests": [],
+    "search_history": [],
+    "recent_clicks": [],
+    "persona_desc": "New visitor with no cookies or prior history. Tests cold-start recommendation engine."
+  }
+]
