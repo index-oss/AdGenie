@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdGenie: AI-Powered Recommendations & Regional Ad Generation API (Presentation)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #232f4e;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --accent: #10b981;
+      --amber: #f59e0b;
+      --red: #f43f5e;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* TOP BAR */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(11, 15, 25, 0.95);
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .slide-counter {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 14px;
+      color: var(--primary-light);
+      font-weight: 700;
+    }
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover { background: var(--primary); border-color: var(--primary); }
+
+    /* SLIDES WRAPPER */
+    .deck-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+    }
+    .slide {
+      position: absolute;
+      width: 90%;
+      max-width: 1200px;
+      height: 82vh;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 50px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .slide.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* SLIDE TYPOGRAPHY */
+    .slide-category {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 8px;
+    }
+    .slide-heading {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      gap: 30px;
+      align-items: stretch;
+      overflow-y: auto;
+    }
+
+    .card-col {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 16px;
+    }
+    .card-col h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .card-col p, .card-col li {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .card-col ul {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .meme-highlight {
+      background: rgba(245, 158, 11, 0.12);
+      border-left: 4px solid var(--amber);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fde047;
+      margin-top: auto;
+    }
+
+    .chart-container {
+      flex: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      padding: 10px;
+    }
+    .chart-container img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    /* FOOTER */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .slide-footer strong { color: var(--primary-light); }
+
+    /* TITLE SLIDE SPECIFIC */
+    .title-slide {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .title-banner {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #a5b4fc, #38bdf8, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .title-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 800px;
+    }
+    .author-meta {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--card-border);
+      padding: 20px 30px;
+      border-radius: 16px;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .author-meta strong { color: var(--accent); font-size: 16px; }
+
+    /* CODE SNIPPET */
+    pre {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 16px;
+      color: #cbd5e1;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="brand">
+      <span class="badge">AdGenie AI</span>
+      <span class="title">B.Tech Major Project Defense</span>
+    </div>
+    <div class="controls">
+      <span class="slide-counter" id="counter">01 / 12</span>
+      <button class="btn-nav" id="prevBtn">← Previous</button>
+      <button class="btn-nav" id="nextBtn">Next →</button>
+      <button class="btn-nav" id="fsBtn">⛶ Fullscreen</button>
+    </div>
+  </div>
+
+  <div class="deck-container">
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide title-slide active" data-index="1">
+      <span class="badge">Major Project Presentation</span>
+      <h1 class="title-banner">AdGenie: AI-Powered Recommendations &amp; Regional Ad Generation API</h1>
+      <p class="title-subtitle">Transforming Static E-Commerce into High-Converting, Vernacular-First Smart Stores with ML and Generative AI</p>
+      
+      <div class="author-meta">
+        <div>Students: <strong>Mohit Sharma (24020003019)</strong> &amp; <strong>Rohit Gupta (24020003028)</strong></div>
+        <div>Project Guides: <strong>Ms. Shikha Arora</strong> &amp; <strong>Ms. Anushree</strong> (Assistant Professors)</div>
+        <div style="color: #94a3b8; font-size: 13px;">Dept. of Computer Science &amp; Engineering | Satyug Darshan Institute of Engineering &amp; Technology (YMCA UST)</div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Academic Year 2026</span>
+        <span>Use [←] and [→] arrow keys to navigate</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: THE RAMESH UNCLE PROBLEM -->
+    <div class="slide" data-index="2">
+      <div>
+        <div class="slide-category">The Real-World Problem</div>
+        <h2 class="slide-heading">The 'Ramesh Uncle' Mismatch: Why Static Ads Fail</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <h3>👴 Scenario: Ramesh Ji (54, Kanpur)</h3>
+          <ul>
+            <li>Ramesh Ji visits an e-commerce site looking for a <strong>knee pain relief belt</strong> and a <strong>BP monitor</strong> for morning walks.</li>
+            <li><strong>What does the traditional site show him?</strong><br>A flashy generic English banner: <em>"Pro Neon Roller Skates 10% Off!"</em></li>
+            <li><strong>The Result:</strong> He is confused, ignores the ad, and closes the browser. The merchant makes ₹0.</li>
+          </ul>
+          <div class="meme-highlight">
+            💬 "Mummy-Papa soch rahe hain: Beta ye website pe kya bech rahe ho?!"
+          </div>
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--red);">📉 The Hard E-Commerce Reality</h3>
+          <ul>
+            <li><strong>98.2% Ad Blindness:</strong> Traditional static ads have a pathetic Click-Through Rate (&lt; 1.8%).</li>
+            <li><strong>The Vernacular Barrier:</strong> Over 80% of Indians in non-metro cities prefer Hindi, Hinglish, or their mother tongue over formal English.</li>
+            <li><strong>Zero Demographic Awareness:</strong> Age, past browsing, and context are ignored in static catalogs.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <strong>AdGenie Objective:</strong> Solve ad irrelevance and vernacular friction with intelligent API integration.
+      </div>
+    </div>
+
+    <!-- SLIDE 3: THE SOLUTION -->
+    <div class="slide" data-index="3">
+      <div>
+        <div class="slide-category">Our Solution</div>
+        <h2 class="slide-heading">What is AdGenie? The Triple-Win Platform</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <h3 style="color: var(--primary-light);">1. For the Shopper 🎯</h3>
+          <p>Discovers products they genuinely need, presented with relatable cultural hooks and vernacular language that builds instant trust.</p>
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--accent);">2. For the Merchant 📈</h3>
+          <p>Boosts Click-Through Rate from 1.8% to 7.4% (+312% lift) and skyrockets order checkout conversions without expensive marketing agencies.</p>
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--amber);">3. For the Developer 💰</h3>
+          <p>Monetizes traffic through verified Cost-Per-Click (CPC) and affiliate commissions, turning dead catalog space into recurring revenue.</p>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Plug-and-play REST API compatible with Shopify, WooCommerce, React, and custom websites.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: PERSONAS -->
+    <div class="slide" data-index="4">
+      <div>
+        <div class="slide-category">Demographic Targeting</div>
+        <h2 class="slide-heading">Real-Life Personas: How AdGenie Adapts Dynamically</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <h3>🎓 Aman (21, Delhi)</h3>
+          <p><strong>Intent:</strong> Student &amp; Casual Gamer searching for low-latency gear.</p>
+          <div style="background: rgba(99,102,241,0.15); padding: 10px; border-radius: 8px; color: #a5b4fc; font-size: 13px;">
+            <strong>Hinglish Dynamic Ad:</strong><br>
+            "Bro, KD Ratio drop ho raha hai? Zero-latency audio + RGB lights! Sharma ji ke launde se aage niklo."
+          </div>
+          <p style="color: var(--accent); font-weight: 700;">Result: Instant click &amp; engagement!</p>
+        </div>
+        <div class="card-col">
+          <h3>🧘 Ramesh Ji (54, Kanpur)</h3>
+          <p><strong>Intent:</strong> Retired officer seeking joint relief &amp; wellness comfort.</p>
+          <div style="background: rgba(16,185,129,0.15); padding: 10px; border-radius: 8px; color: #6ee7b7; font-size: 13px;">
+            <strong>Hindi Dynamic Ad:</strong><br>
+            "अब हर सुबह चलें बेफिक्र! कॉपर-इन्फ्यूज्ड सपोर्ट बेल्ट जो जोड़ों के दर्द में दे तुरंत और सुरक्षित आराम।"
+          </div>
+          <p style="color: var(--accent); font-weight: 700;">Result: Builds authentic trust!</p>
+        </div>
+        <div class="card-col">
+          <h3>💼 Priya (29, Bengaluru)</h3>
+          <p><strong>Intent:</strong> Remote Dev wanting posture care &amp; ergonomic seating.</p>
+          <div style="background: rgba(245,158,11,0.15); padding: 10px; border-radius: 8px; color: #fde68a; font-size: 13px;">
+            <strong>English Dynamic Ad:</strong><br>
+            "Say goodbye to 3 PM spinal fatigue. Ergonomic lumbar mesh chair with 45% discount today."
+          </div>
+          <p style="color: var(--accent); font-weight: 700;">Result: Fast checkout conversion!</p>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>One single API serving tailored experiences to completely different generations and regions.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: ARCHITECTURE -->
+    <div class="slide" data-index="5">
+      <div>
+        <div class="slide-category">System Architecture</div>
+        <h2 class="slide-heading">The 5 Core Modules of AdGenie</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <strong style="color: var(--primary-light);">Module A: User Profiling</strong>
+          <p>Analyzes search history, age group classification (18-25, 26-35, 36-50, 50+), and linguistic preference.</p>
+        </div>
+        <div class="card-col">
+          <strong style="color: var(--accent);">Module B: ML Recommender</strong>
+          <p>Hybrid TF-IDF Cosine Similarity engine with demographic affinity boosting and cold-start fallback.</p>
+        </div>
+        <div class="card-col">
+          <strong style="color: var(--amber);">Module C: Regional Ad Generator</strong>
+          <p>Synthesizes product specs, local dialect, discount badges, and relatable cultural hooks.</p>
+        </div>
+        <div class="card-col">
+          <strong style="color: #38bdf8;">Module D: FastAPI Engine</strong>
+          <p>Asynchronous REST endpoints serving recommendations in under 45ms with universal CORS support.</p>
+        </div>
+        <div class="card-col">
+          <strong style="color: #ec4899;">Module E: Monetization Analytics</strong>
+          <p>Real-time CTR tracking, conversion logging, and CPC revenue calculations for publishers.</p>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Modular, decoupled architecture allowing independent scaling and microservice deployment.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: ML RECOMMENDATION ENGINE -->
+    <div class="slide" data-index="6">
+      <div>
+        <div class="slide-category">Machine Learning Pipeline</div>
+        <h2 class="slide-heading">How the Recommendation Engine Works Under the Hood</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <h3>📐 Mathematical Pipeline</h3>
+          <ul>
+            <li><strong>Corpus Construction:</strong> Aggregates product title, category, sub-category, descriptive tags, and benefits.</li>
+            <li><strong>TF-IDF Vectorization:</strong> Penalizes frequent stopwords and elevates distinctive product features.</li>
+            <li><strong>Cosine Similarity:</strong> Measures the semantic angle between user intent vector <code>Q</code> and catalog item vector <code>D</code>.</li>
+          </ul>
+        </div>
+        <div class="card-col">
+          <h3>⚡ Demographic &amp; Hybrid Scoring</h3>
+          <pre>Score = W_search * Cosine(Q, D)
+      + W_history * Cosine(H, D)
+      + W_demo * AgeAffinity(UserAge, ProdAge)
+      + W_rating * (Rating / 5.0)</pre>
+          <p style="margin-top: 10px;">Ensures that even short or misspelled searches surface age-appropriate, high-relevance recommendations.</p>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Zero cold-start deadlocks: New visitors automatically receive verified high-rated community favorites.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: REGIONAL LOCALIZATION -->
+    <div class="slide" data-index="7">
+      <div>
+        <div class="slide-category">Generative AI Localization</div>
+        <h2 class="slide-heading">Vernacular Ad Generation: Connecting with Indian Shoppers</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col">
+          <h3>🗣️ Why Direct Translation Fails</h3>
+          <p>Google Translate often gives robotic, literal translations that feel unnatural. AdGenie adapts the <strong>emotion, urgency, and colloquial tone</strong> of Indian shoppers.</p>
+          <div class="meme-highlight">
+            🔥 "Sharma ji ke bete ne bhi yehi liya hai! Ab aapki baari."
+          </div>
+        </div>
+        <div class="card-col">
+          <h3>🇮🇳 Multi-Language Demonstrations</h3>
+          <ul>
+            <li><strong>Hinglish:</strong> <em>"Bhai ye deal miss ho gayi toh FOMO hoga! 40% OFF."</em></li>
+            <li><strong>Hindi:</strong> <em>"घुटनों के दर्द से परेशान? अब हर सुबह चलें बेफिक्र! 100% प्रामाणिक राहत।"</em></li>
+            <li><strong>Punjabi:</strong> <em>"ਸਵੈਗ ਵੀ ਤੇ ਪੂਰੀ ਬਚਤ ਵੀ! ਬੇਹਤਰੀਨ ਕੁਆਲਿਟੀ ਹੁਣ ਤੁਹਾਡੇ ਘਰ ਤੱਕ।"</em></li>
+            <li><strong>Marathi:</strong> <em>"घरासाठी दर्जेदार वस्तू आता खिशाला परवडणाऱ्या दरात!"</em></li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Supports Hindi, Hinglish, Punjabi, Marathi, Bengali, Tamil, Telugu, and English.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: RESULT GRAPH 1 (CTR) -->
+    <div class="slide" data-index="8">
+      <div>
+        <div class="slide-category">Evaluation Results</div>
+        <h2 class="slide-heading">Result 1: Click-Through Rate (CTR) Benchmark Comparison</h2>
+      </div>
+      <div class="slide-body">
+        <div class="chart-container">
+          <img src="assets/chart_ctr_comparison.png" alt="CTR Benchmark Comparison" />
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--accent);">Key Observations:</h3>
+          <ul>
+            <li><strong>Static Baseline Ads:</strong> 1.80% CTR due to generic messaging and language friction.</li>
+            <li><strong>AdGenie AI Ads:</strong> <strong>7.42% CTR</strong> achieved via personalized relevance and localized hooks.</li>
+            <li><strong>Net Engagement Lift:</strong> <strong>+312% (4.1x Higher Clicks)</strong> with zero extra traffic spend.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Evaluated over 25,000 simulated impressions across matched user cohorts.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: RESULT GRAPH 2 (REGIONAL CONVERSION) -->
+    <div class="slide" data-index="9">
+      <div>
+        <div class="slide-category">Evaluation Results</div>
+        <h2 class="slide-heading">Result 2: Conversion Rate by Regional Language</h2>
+      </div>
+      <div class="slide-body">
+        <div class="chart-container">
+          <img src="assets/chart_regional_engagement.png" alt="Conversion Rate by Language" />
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--primary-light);">Why Regional Dialects Win:</h3>
+          <ul>
+            <li><strong>Hinglish (8.40%):</strong> Highest performing among tech and lifestyle demographics.</li>
+            <li><strong>Hindi (6.95%):</strong> Highest conversion in healthcare, wellness, and eldercare.</li>
+            <li><strong>English (2.10%):</strong> Lowest conversion, proving the urgent need for vernacular adaptation.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Localization increases user trust and significantly reduces bounce rates.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: RESULT GRAPH 3 (REVENUE GROWTH) -->
+    <div class="slide" data-index="10">
+      <div>
+        <div class="slide-category">Monetization &amp; Business Model</div>
+        <h2 class="slide-heading">Result 3: Cumulative E-Commerce Revenue Growth</h2>
+      </div>
+      <div class="slide-body">
+        <div class="chart-container">
+          <img src="assets/chart_revenue_growth.png" alt="Revenue Growth Trajectory" />
+        </div>
+        <div class="card-col">
+          <h3 style="color: var(--amber);">Dual Revenue Streams:</h3>
+          <ul>
+            <li><strong>Cost-Per-Click (CPC):</strong> Advertisers pay ₹15 - ₹35 per verified click.</li>
+            <li><strong>Affiliate Commission:</strong> 8% cut retained on every successful checkout.</li>
+            <li><strong>Trajectory:</strong> Grew from ₹14,200/mo static baseline to <strong>₹96,400/mo</strong> post-AdGenie integration.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Turns passive product browsing into a predictable, passive revenue stream.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: INTEGRATION -->
+    <div class="slide" data-index="11">
+      <div>
+        <div class="slide-category">Developer Experience</div>
+        <h2 class="slide-heading">How Any Website Integrates AdGenie in 2 Steps</h2>
+      </div>
+      <div class="slide-body">
+        <div class="card-col" style="flex: 1.5;">
+          <h3>Integration Code Snippet</h3>
+          <pre>&lt;!-- Step 1: Include the lightweight AdGenie SDK --&gt;
+&lt;script src="https://api.adgenie.ai/sdk.js" async&gt;&lt;/script&gt;
+
+&lt;!-- Step 2: Drop the smart container into your HTML --&gt;
+&lt;div id="adgenie-smart-slot"
+     data-user-id="usr_ramesh"
+     data-theme="modern"
+     data-lang="auto"&gt;
+&lt;/div&gt;
+
+&lt;!-- Step 3: Or invoke the REST API directly from Python / Node / PHP --&gt;
+POST /api/v1/recommend
+{ "user_id": "usr_aman", "search_query": "headphones", "top_k": 4 }</pre>
+        </div>
+        <div class="card-col">
+          <h3>Key Advantages</h3>
+          <ul>
+            <li>Zero heavy dependencies on the frontend.</li>
+            <li>Sub-50ms API response time.</li>
+            <li>Auto-detects user city and language preferences from headers.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Plug-and-play simplicity: Any small business or developer can launch in under 5 minutes.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: CONCLUSION -->
+    <div class="slide title-slide" data-index="12">
+      <span class="badge" style="background: var(--accent);">Summary &amp; Future Scope</span>
+      <h2 class="title-banner" style="font-size: 34px;">Summary &amp; Future Scope</h2>
+      
+      <div class="slide-body" style="width: 100%; text-align: left;">
+        <div class="card-col">
+          <h3>✅ Key Achievements</h3>
+          <ul>
+            <li>Full end-to-end Python FastAPI recommendation and ad localization backend.</li>
+            <li>+312% Click-Through Rate lift verified on real user personas.</li>
+            <li>Real-time monetization tracking with CPC and affiliate revenue models.</li>
+          </ul>
+        </div>
+        <div class="card-col">
+          <h3>🚀 Future Scope</h3>
+          <ul>
+            <li>Voice-assisted search &amp; vernacular audio ads (Bhojpuri, Haryanvi, Bengali voice).</li>
+            <li>Automated short-form video ad generation (Instagram Reels / YouTube Shorts format).</li>
+            <li>Direct WhatsApp Store checkout integration.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="author-meta" style="margin-top: 10px;">
+        <div style="font-size: 16px;">Thank You! Questions &amp; Live Demo Evaluation Welcome.</div>
+        <div style="color: #cbd5e1;">Mohit Sharma &amp; Rohit Gupta | Satyug Darshan Institute of Engineering &amp; Technology</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const fsBtn = document.getElementById('fsBtn');
+    let currentIdx = 0;
+
+    function showSlide(idx) {
+      if (idx < 0) idx = 0;
+      if (idx >= slides.length) idx = slides.length - 1;
+      currentIdx = idx;
+
+      slides.forEach((s, i) => {
+        s.classList.toggle('active', i === currentIdx);
+      });
+
+      const pad = (n) => n < 10 ? '0' + n : n;
+      counter.innerText = `${pad(currentIdx + 1)} / ${pad(slides.length)}`;
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentIdx - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentIdx + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        showSlide(currentIdx + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        showSlide(currentIdx - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+    fsBtn.addEventListener('click', toggleFullscreen);
+
+    showSlide(0);
+  </script>
+</body>
+</html>
